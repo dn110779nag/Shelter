@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
 
 /**
  * Created by novax00 on 29.09.17.
@@ -65,6 +67,7 @@ public class ShelterContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+        Log.d(Constants.LOG_TAG, "URI ==> "+uri);
         final int match = sUriMatcher.match(uri);
 
         switch (match) {

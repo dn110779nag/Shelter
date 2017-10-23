@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">Shelter</string>
     <string name="action_settings">Settings</string>
+    <string name="empty_view_title_text">No items</string>
+    <string name="empty_view_subtitle_text">Add new items</string>
+    <string name="action_add_dummy">Add dummy</string>
+    <string name="item_name">name</string>
+    <string name="description">description</string>
+    <string name="quantity_example">quantity 100</string>
+    <string name="price_example">price 1.00</string>
+    <string name="action_save">save</string>
+    <string name="action_delete">delete</string>
+    <string name="unsaved_changes_dialog_msg">There are unsaved changes</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="editor_insert_failed">Insert failed</string>
+    <string name="editor_insert_successful">Adding successful</string>
 </resources>
