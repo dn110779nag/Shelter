@@ -15,4 +15,14 @@
     <string name="keep_editing">Keep editing</string>
     <string name="editor_insert_failed">Insert failed</string>
     <string name="editor_insert_successful">Adding successful</string>
+    <string name="delete_dialog_msg">Delete ?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="item_is_deleted">Item is deleted</string>
+    <string name="something_wrong">Something wrong</string>
+    <string name="action_delete_all_entries">Delete all entries</string>
+    <string name="delete_all">Delete all</string>
+    <string name="delete_all_dialog_msg">Delete all?</string>
+    <string name="must_not_be_empty">Must not beempty</string>
+    <string name="must_match_pattern">Must match pattern</string>
 </resources>

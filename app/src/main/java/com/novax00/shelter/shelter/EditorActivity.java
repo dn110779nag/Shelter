@@ -3,6 +3,7 @@ package com.novax00.shelter.shelter;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
@@ -67,8 +68,10 @@ public class EditorActivity extends AppCompatActivity  implements LoaderManager.
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                save();
-                finish();
+                if(save()) {
+                    finish();
+
+                }
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -105,6 +108,38 @@ public class EditorActivity extends AppCompatActivity  implements LoaderManager.
     }
 
     private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the pet.
+                delete();
+                finish();
+//                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void delete() {
+        // TODO: Implement this method
+        if(this.getContentResolver().delete(this.uri, null, null)==1){
+            Toast.makeText(this, R.string.item_is_deleted, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showUnsavedChangesDialog(DialogInterface.OnClickListener discardButtonClickListener) {
@@ -126,45 +161,68 @@ public class EditorActivity extends AppCompatActivity  implements LoaderManager.
         alertDialog.show();
     }
 
-    private void save() {
+    private boolean save() {
         String name = nameView.getText().toString();
         String description = descriptionView.getText().toString();
         String sQuantity = quantityView.getText().toString();
         String sPrice = priceView.getText().toString();
-        StringBuilder err = new StringBuilder();
-        if(TextUtils.isEmpty(name)){
+        TextInputLayout nameLayout = (TextInputLayout)findViewById(R.id.nameLayout);
+        TextInputLayout descriptionLayout = (TextInputLayout)findViewById(R.id.descriptionLayout);
+        TextInputLayout quantityLayout = (TextInputLayout)findViewById(R.id.quantityLayout);
+        TextInputLayout priceLayout = (TextInputLayout)findViewById(R.id.priceLayout);
 
+        nameLayout.setErrorEnabled(false);
+        descriptionLayout.setErrorEnabled(false);
+        quantityLayout.setErrorEnabled(false);
+        priceLayout.setErrorEnabled(false);
+
+        boolean err = false;
+        if(TextUtils.isEmpty(name)){
+            nameLayout.setErrorEnabled(true);
+            nameLayout.setError(getString(R.string.must_not_be_empty));
+            err = true;
         }
         if(TextUtils.isEmpty(description)){
-
+            descriptionLayout.setErrorEnabled(true);
+            descriptionLayout.setError(getString(R.string.must_not_be_empty));
+            err = true;
         }
-        if(!Pattern.compile("\\d+").matcher(sQuantity).matches()){
-
+        String quantityPattern = "\\d+";
+        if(!Pattern.compile(quantityPattern).matcher(sQuantity).matches()){
+            quantityLayout.setErrorEnabled(true);
+            quantityLayout.setError(getString(R.string.must_match_pattern)+ quantityPattern);
+            err = true;
         }
-        if(!Pattern.compile("\\d+(\\.\\d{0,2})?").matcher(sQuantity).matches()){
-
+        String pricePattern ="\\d+(\\.\\d{0,2})?";
+        if(!Pattern.compile(pricePattern).matcher(sPrice).matches()){
+            priceLayout.setErrorEnabled(true);
+            priceLayout.setError(getString(R.string.must_match_pattern)+ pricePattern);
+            err = true;
         }
-        long quantity = Long.parseLong(sQuantity);
-        BigDecimal price = new BigDecimal(sPrice);
-        if (this.uri != null) {
-            int cnt = getContentResolver().update(
-                    this.uri,
-                    ShelterDbHelper.createValues(name, description, quantity, price),
-                    null, null);
-        } else {
-            Uri newUri = getContentResolver().insert(
-                    ShelterContract.CONTENT_URI,
-                    ShelterDbHelper.createValues(name, description, quantity, price));
-            if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_failed),
-                        Toast.LENGTH_SHORT).show();
+        if(!err) {
+            long quantity = Long.parseLong(sQuantity);
+            BigDecimal price = new BigDecimal(sPrice);
+            if (this.uri != null) {
+                int cnt = getContentResolver().update(
+                        this.uri,
+                        ShelterDbHelper.createValues(name, description, quantity, price),
+                        null, null);
             } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_successful),
-                        Toast.LENGTH_SHORT).show();
+                Uri newUri = getContentResolver().insert(
+                        ShelterContract.CONTENT_URI,
+                        ShelterDbHelper.createValues(name, description, quantity, price));
+                if (newUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    Toast.makeText(this, getString(R.string.editor_insert_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the insertion was successful and we can display a toast.
+                    Toast.makeText(this, getString(R.string.editor_insert_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
+        return !err;
     }
 
     @Override

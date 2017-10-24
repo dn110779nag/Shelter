@@ -54,8 +54,11 @@ public class ShelterContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
-        return database.query(ShelterContract.ItemEntry.TABLE_NAME, projection, selection,
+        Cursor cursor = database.query(ShelterContract.ItemEntry.TABLE_NAME, projection, selection,
                 selectionArgs, null, null, sortOrder);
+
+         cursor.setNotificationUri(this.getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
@@ -73,9 +76,11 @@ public class ShelterContentProvider extends ContentProvider {
         switch (match) {
             case ITEMS:
                 return insertItem(uri, values);
+
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
+
     }
 
     private Uri insertItem(Uri uri, ContentValues values) {
@@ -83,7 +88,7 @@ public class ShelterContentProvider extends ContentProvider {
 
         long id = this.shelterDbHelper.getWritableDatabase().insert(
                 ShelterContract.ItemEntry.TABLE_NAME, null, values);
-
+        this.getContext().getContentResolver().notifyChange(uri,null);
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it
         return ContentUris.withAppendedId(uri, id);
@@ -94,34 +99,45 @@ public class ShelterContentProvider extends ContentProvider {
         SQLiteDatabase database = shelterDbHelper.getWritableDatabase();
 
         final int match = sUriMatcher.match(uri);
+        int res = -1;
         switch (match) {
             case ITEMS:
                 // Delete all rows that match the selection and selection args
-                return database.delete(ShelterContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
+
+                res = database.delete(ShelterContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             case ITEM_ID:
                 // Delete a single row given by the ID in the URI
                 selection = ShelterContract.ItemEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return database.delete(ShelterContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
+                res = database.delete(ShelterContract.ItemEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
+        this.getContext().getContentResolver().notifyChange(uri,null);
+        return res;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues,
                       @Nullable String selection, @Nullable String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
+        int res = -1;
         switch (match) {
             case ITEMS:
-                return updateItem(contentValues, selection, selectionArgs);
+                res = updateItem(contentValues, selection, selectionArgs);
+                break;
             case ITEM_ID:
                 selection = ShelterContract.ItemEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
-                return updateItem(contentValues, selection, selectionArgs);
+                res = updateItem(contentValues, selection, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
+        this.getContext().getContentResolver().notifyChange(uri,null);
+        return res;
     }
 
     private int updateItem(ContentValues values, String selection, String[] selectionArgs) {
