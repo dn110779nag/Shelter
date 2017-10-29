@@ -156,4 +156,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
         }
     }
+
 }
