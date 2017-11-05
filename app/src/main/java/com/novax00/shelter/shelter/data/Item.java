@@ -12,4 +12,5 @@ public class Item {
     private String description;
     private long quantity;
     private BigDecimal price;
+    private String imagePath;
 }

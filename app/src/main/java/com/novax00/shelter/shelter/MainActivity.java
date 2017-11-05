@@ -69,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public void addItem(View v) {
 
-        Intent instant = new Intent(MainActivity.this, EditorActivity.class);
+        Intent intent = new Intent(MainActivity.this, EditorActivity.class);
 
-        startActivity(instant);
+        startActivity(intent);
 
     }
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_dummy) {
             getContentResolver().insert(ShelterContract.CONTENT_URI,
-                    ShelterDbHelper.createValues("test", "Тестовый товар", 5, new BigDecimal("1.23"))
+                    ShelterDbHelper.createValues("test", "Тестовый товар", 5, new BigDecimal("1.23"), null)
             );
             return true;
         } else if(id == R.id.action_delete_all_entries){

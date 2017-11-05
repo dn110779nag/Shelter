@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.math.BigDecimal;
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
  */
 
 public class ShelterDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Shelter.db";
 
     public ShelterDbHelper(Context context) {
@@ -26,6 +27,8 @@ public class ShelterDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        sqLiteDatabase.execSQL(ShelterContract.DROP_TABLE);
+        Log.v(ShelterContract.LOG_TAG, ShelterContract.DROP_TABLE + "==> OK");
         sqLiteDatabase.execSQL(ShelterContract.CREATE_TABLE);
         onCreate(sqLiteDatabase);
     }
@@ -34,12 +37,14 @@ public class ShelterDbHelper extends SQLiteOpenHelper {
             String name,
             String description,
             long quantity,
-            BigDecimal price){
+            BigDecimal price,
+            String imagePath){
         ContentValues v = new ContentValues();
         v.put(ShelterContract.ItemEntry.COLUMN_ITEM_NAME, name);
         v.put(ShelterContract.ItemEntry.COLUMN_ITEM_DESCRIPTION, description);
         v.put(ShelterContract.ItemEntry.COLUMN_ITEM_PRICE, price.toString());
         v.put(ShelterContract.ItemEntry.COLUMN_ITEM_QUANTITY, quantity);
+        v.put(ShelterContract.ItemEntry.COLUMN_ITEM_IMAGE_PATH, imagePath);
         return v;
     }
 }

@@ -24,12 +24,13 @@ public class ShelterContract {
                     +" (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + ItemEntry.COLUMN_ITEM_NAME+" TEXT, "
                     + ItemEntry.COLUMN_ITEM_DESCRIPTION + " TEXT, "
-                    + ItemEntry.COLUMN_ITEM_QUANTITY + " INTEGER, " +
-                    ItemEntry.COLUMN_ITEM_PRICE+ " NUMBER);";
+                    + ItemEntry.COLUMN_ITEM_QUANTITY + " INTEGER, "
+                    + ItemEntry.COLUMN_ITEM_PRICE+ " NUMBER,"
+                    + ItemEntry.COLUMN_ITEM_IMAGE_PATH+ " TEXT);";
 
-    public static final String DELETE_TABLE = "DELETE FROM "+ ItemEntry.TABLE_NAME;
+    public static final String DELETE_TABLE = "DELETE FROM "+ ItemEntry.TABLE_NAME+";";
 
-    public static final String DROP_TABLE = "DROP TABLE "+ ItemEntry.TABLE_NAME;
+    public static final String DROP_TABLE = "DROP TABLE IF EXISTS "+ ItemEntry.TABLE_NAME+";";
 
 
     public static final class ItemEntry implements BaseColumns {
@@ -51,6 +52,7 @@ public class ShelterContract {
         public static final String COLUMN_ITEM_DESCRIPTION = "DESCRIPTION";
         public static final String COLUMN_ITEM_QUANTITY = "QUANTITY";
         public static final String COLUMN_ITEM_PRICE = "PRICE";
+        public static final String COLUMN_ITEM_IMAGE_PATH = "IMAGE_PATH";
 
 
     }

@@ -299,18 +299,19 @@ public class EditorActivity extends AppCompatActivity  implements LoaderManager.
             priceLayout.setError(getString(R.string.must_match_pattern)+ pricePattern);
             err = true;
         }
+
         if(!err) {
             long quantity = Long.parseLong(sQuantity);
             BigDecimal price = new BigDecimal(sPrice);
             if (this.uri != null) {
                 int cnt = getContentResolver().update(
                         this.uri,
-                        ShelterDbHelper.createValues(name, description, quantity, price),
+                        ShelterDbHelper.createValues(name, description, quantity, price, mCurrentPhotoPath),
                         null, null);
             } else {
                 Uri newUri = getContentResolver().insert(
                         ShelterContract.CONTENT_URI,
-                        ShelterDbHelper.createValues(name, description, quantity, price));
+                        ShelterDbHelper.createValues(name, description, quantity, price, mCurrentPhotoPath));
                 if (newUri == null) {
                     // If the new content URI is null, then there was an error with insertion.
                     Toast.makeText(this, getString(R.string.editor_insert_failed),
@@ -346,6 +347,7 @@ public class EditorActivity extends AppCompatActivity  implements LoaderManager.
             descriptionView.setText(data.getString(data.getColumnIndex(ShelterContract.ItemEntry.COLUMN_ITEM_DESCRIPTION)));
             quantityView.setText(String.valueOf(data.getInt(data.getColumnIndex(ShelterContract.ItemEntry.COLUMN_ITEM_QUANTITY))));
             priceView.setText(data.getString(data.getColumnIndex(ShelterContract.ItemEntry.COLUMN_ITEM_PRICE)));
+            mCurrentPhotoPath = data.getString(data.getColumnIndex(ShelterContract.ItemEntry.COLUMN_ITEM_IMAGE_PATH));
         }
     }
 

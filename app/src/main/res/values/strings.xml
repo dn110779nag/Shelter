@@ -25,4 +25,5 @@
     <string name="delete_all_dialog_msg">Delete all?</string>
     <string name="must_not_be_empty">Must not beempty</string>
     <string name="must_match_pattern">Must match pattern</string>
+    <string name="title_activity_photo_view">PhotoViewActivity</string>
 </resources>
